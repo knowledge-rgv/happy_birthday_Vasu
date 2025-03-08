@@ -156,10 +156,10 @@ nav {
   opacity: 0.8;
 }
 
-.balloon1 { left: 10%; animation-duration: 8s; background-image: url('images/balloon4.png'); }
-.balloon2 { left: 30%; animation-duration: 10s; background-image: url('images/balloon3.png'); }
-.balloon3 { left: 60%; animation-duration: 16s; background-image: url('images/balloon2.png'); }
-.balloon5 { left: 90%; animation-duration: 7s; background-image: url('images/balloon5.png'); }
+.balloon1 { left: 10%; animation-duration: 8s; background-image: url('balloon4.png'); }
+.balloon2 { left: 30%; animation-duration: 10s; background-image: url('balloon3.png'); }
+.balloon3 { left: 60%; animation-duration: 16s; background-image: url('balloon2.png'); }
+.balloon5 { left: 90%; animation-duration: 7s; background-image: url('balloon5.png'); }
 
 @keyframes float {
   0% { transform: translateY(100vh) translateX(0); opacity: 0; }
