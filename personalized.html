@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Note</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">Vasu</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="notes.html">Leave a Note</a></li>
+      <li><a href="personalized.html">Personalized Note</a></li>
+      <li><a href="drawing.html">Drawing</a></li>
+    </ul>
+    <div class="hamburger">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Personalized Note</h1>
+    <button id="unlockNoteButton" onclick="promptNotePassword()">Unlock Note</button>
+    <div id="personalizedNote" style="display: none;">
+      <p>Hello, Mr. Vasu!</p>
+      <p>Many more happy returns of the day 🎂🎉! Happy 24 😊! Wish you have a great year and successful life ahead. Keep learning from you mistakes and keep growing. Don't forget to include your friends & family in all your ups and downs :) </p>
+      <img src="images/photo_st.png" alt="Birthday Image" class="selfie-image">
+      <p>A big shout out to the one who makes people's life brighter, laughter louder, and memories sweeter! Today is your day, and I want you to know how much your presence and your friendship means to me - not just today, but every single day from start of our journey! 
+         From the moment our paths crossed, I have always felt a good vibe and a great bond! You have this incredible way of turning a bad day to a great one may be like some magician, making the world feel lighter even when it feels heavy ❤️
+         </p>
+         <p>Tough it's been less than 2 months since we've met but our bond has strengthed a lot. I rarely let people come into my circle but once they come I never let them escape from my chains (lol). Jokes apart, I think a lot before making someone as a friend and you are one of the nicest guys I've ever met, the great comfort you give in your presence, the way you see things around you, the maturity and understanding you have, what not, everything makes you a great human being! 
+         Apart from being a great human being, you have also been a person who has a clear vision on you life and goals, you have also been a great friend to all your friends, and of course a great chit-chatter, instagram user, movie watcher with a good sense of humour 😂
+      </p>
+      <img src="images/image_selfie.jpg" alt="Birthday Image" class="selfie-image">
+      <p>
+        Do you remember all the great memories we have made in a very little span of time! The endless laughter we had, the long text chats we brought, the bigger debates we've made, the fun games we've played, the silly discussions we cooked, the pranks you had to go through, or the times we just sat in silence knowing that words weren't needed because our hearts spoke the same language? All the moments are stuck in my soul, like the bright stars stuck to the black canvas in the night!💫
+        Your strength and resilience is an inspiration, Your experiences and learnings are leassons, Your kindness and fairness is a motivation, Your love and care for your people is what makes your more unique! You have taught me a lot of life lessons and so much knowledge on various topics too! It is inspiring to see you stand for friendships not only in the good times but standing together through the stroms in a world where mostly people just stay selfish, so yeah it must be natural for you to have a lot number of friends who would have deep respect, gratitude, care, admiration, and love of which I'm one!
+      </p>
+      <p>
+        On your birthday, I want you to know how deeply you are loved by everyone. You are the sun on a cloudy day, the calm in the chaos, and the glue that holds so many lives together. You deserve all the happiness in the world, and I hope this year brings you everything your heart desires and more, be it betterment in carrer, be it betterment in knowledge, be it betterment in your family and friends, be it betterment in your relationship status ✌️😂. 
+        Though as per Rule Number 2, Thank you's aren't allowed but I can't really resist myself from telling you a very big thank you for being you - for your quirks, your flaws, your brilliance and your unique personality. Thank you for being a great buddy, a comfort place, and my forever bestie!😉
+      </p>
+      <p>
+        It is always fun you have you around. It is always nice to know unknown things from you be it in AI-ML, be it office secrets, be it geography, history, divinity, or some common sense! 
+      </p>
+      <p> 
+        Again, there are many things which I can talk about where my hands won't stop pressing the keys, but I would like to keep it short cause it must be boring for you to read all the stuff I write 🤣. But it's okay I will somehow end up putting the stuff inside your brain, we have lot more years to talk! And when I talk about it, it is pretty sure that the probability of us meeting after the internship at ST would be may be 0.27% as Vishy Anand told on WCC 2024! But I prmoise I would never myself allow to slip away. You will be facing the torture some or other way (lol) and yeah don't worry I will come to your marriage to eat free food 😎😂.  
+      </p>
+      <p>Once Again! Many more happy returns of the day! Hope you like the presents which you will be getting on your 24th birthday! Keep them all safe, I will keep an eye on their status!</p>
+      <button id="lockNoteButton" onclick="lockNote()">Lock Note</button>
+    </div>
+  </div>
+
+  <script>
+    function promptNotePassword() {
+      const password = prompt("Enter the password:");
+      if (password === "Rvm@twf") { // Replace with your chosen password
+        unlockNote();
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+
+    function unlockNote() {
+      document.getElementById("personalizedNote").style.display = "block";
+      document.getElementById("unlockNoteButton").style.display = "none";
+    }
+
+    function lockNote() {
+      document.getElementById("personalizedNote").style.display = "none";
+      document.getElementById("unlockNoteButton").style.display = "inline-block";
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

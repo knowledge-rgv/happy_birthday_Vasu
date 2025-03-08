@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Note</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">Vasu</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="notes.html">Leave a Note</a></li>
+      <li><a href="personalized.html">Personalized Note</a></li>
+      <li><a href="drawing.html">Drawing</a></li>
+    </ul>
+    <div class="hamburger">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Leave a Note for Vasu</h1>
+    <h3>Hey, It would be amazing if you could take some of your time and write a little note for Vasu! It could be from sharing favorite memories, the qualities you love about him or just a heartfelt message to let him to know how much he means to you! Whether it's a funny story, a moment he helped you through, or simply why you think they're one of the best people on this planet, you words will mean the world to him :) Let's fill his day with love, laughter, and reminders of how incredible they truly are!</h3>
+    <form id="noteForm">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <h2>Messages</h2>
+    <div id="messages"></div>
+  </div>
+  <script>
+    const form = document.getElementById("noteForm");
+    const messagesDiv = document.getElementById("messages");
+    const deletePassword = "Rvm@twf"; // Set your desired password here
+
+    // Load messages from localStorage when the page loads
+    function loadMessages() {
+      const messages = JSON.parse(localStorage.getItem("birthdayMessages")) || [];
+      messagesDiv.innerHTML = ""; // Clear current display
+      messages.forEach((msg, index) => {
+        const note = document.createElement("p");
+        note.innerHTML = `<strong>${msg.name}:</strong> ${msg.message} 
+          <button class="delete-btn" data-index="${index}">Delete</button>`;
+        messagesDiv.appendChild(note);
+      });
+      addDeleteListeners(); // Add event listeners to delete buttons
+    }
+
+    // Save a new message to localStorage
+    function saveMessage(name, message) {
+      const messages = JSON.parse(localStorage.getItem("birthdayMessages")) || [];
+      messages.push({ name, message });
+      localStorage.setItem("birthdayMessages", JSON.stringify(messages));
+    }
+
+    // Delete a message from localStorage
+    function deleteMessage(index) {
+      const password = prompt("Enter the password to delete this message:");
+      if (password === deletePassword) {
+        const messages = JSON.parse(localStorage.getItem("birthdayMessages")) || [];
+        messages.splice(index, 1); // Remove message at index
+        localStorage.setItem("birthdayMessages", JSON.stringify(messages));
+        loadMessages(); // Refresh the display
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+
+    // Add event listeners to delete buttons
+    function addDeleteListeners() {
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      deleteButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          const index = button.getAttribute("data-index");
+          deleteMessage(index);
+        });
+      });
+    }
+
+    // Form submission
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const message = document.getElementById("message").value;
+      saveMessage(name, message);
+      loadMessages(); // Refresh the messages display
+      form.reset();
+    });
+
+    // Load messages on page load
+    window.addEventListener("load", loadMessages);
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

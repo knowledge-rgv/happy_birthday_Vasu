@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawing Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">Vasu</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="notes.html">Leave a Note</a></li>
+      <li><a href="personalized.html">Personalized Note</a></li>
+      <li><a href="drawing.html">Drawing</a></li>
+    </ul>
+    <div class="hamburger">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Since You Don't Know Drawing, Learn It!</h1>
+    <div class="drawing-tools">
+      <label for="colorPicker">Color:</label>
+      <input type="color" id="colorPicker" value="#000000">
+      <label for="brushSize">Brush Size:</label>
+      <input type="range" id="brushSize" min="1" max="20" value="5">
+      <button onclick="setEraser()">Eraser</button>
+      <button onclick="clearCanvas()">Clear Canvas</button>
+      <button onclick="undoLastSample()">Undo Last Sample</button>
+      <button onclick="saveDrawing()">Save Drawing</button>
+    </div>
+    <canvas id="drawingCanvas" width="800" height="600"></canvas>
+    <h2>Sample Drawings</h2>
+    <div class="sample-drawings">
+      <button class="sample-btn" onclick="loadSample('tree')">Tree</button>
+      <button class="sample-btn" onclick="loadSample('house')">House</button>
+      <button class="sample-btn" onclick="loadSample('flower')">Flower</button>
+      <button class="sample-btn" onclick="loadSample('sun')">Sun</button>
+      <button class="sample-btn" onclick="loadSample('car')">Car</button>
+      <button class="sample-btn" onclick="loadSample('star')">Star</button>
+      <button class="sample-btn" onclick="loadSample('cat')">Cat</button>
+      <button class="sample-btn" onclick="loadSample('dog')">Dog</button>
+      <button class="sample-btn" onclick="loadSample('balloon')">Balloon</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+    let isDrawing = false;
+    let currentColor = "#000000";
+    let brushSize = 5;
+    let isErasing = false;
+    let sampleHistory = []; // Array of {type, x, y}
+    let isDragging = false;
+    let selectedSample = null;
+
+    // Set canvas background to white
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Color Picker
+    const colorPicker = document.getElementById("colorPicker");
+    colorPicker.addEventListener("input", (e) => {
+      currentColor = e.target.value;
+      isErasing = false;
+    });
+
+    // Brush Size Slider
+    const brushSizeInput = document.getElementById("brushSize");
+    brushSizeInput.addEventListener("input", (e) => {
+      brushSize = e.target.value;
+    });
+
+    // Drawing Functionality
+    canvas.addEventListener("mousedown", startAction);
+    canvas.addEventListener("mousemove", handleMove);
+    canvas.addEventListener("mouseup", stopAction);
+    canvas.addEventListener("mouseout", stopAction);
+
+    function startAction(e) {
+      const x = e.offsetX;
+      const y = e.offsetY;
+
+      // Check if clicking a sample to drag
+      selectedSample = sampleHistory.find(sample => {
+        const { x: sx, y: sy } = sample;
+        return Math.abs(x - sx) < 50 && Math.abs(y - sy) < 50; // Rough hitbox
+      });
+
+      if (selectedSample) {
+        isDragging = true;
+      } else {
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
+    }
+
+    function handleMove(e) {
+      const x = e.offsetX;
+      const y = e.offsetY;
+
+      if (isDragging && selectedSample) {
+        selectedSample.x = x;
+        selectedSample.y = y;
+        redrawCanvas();
+      } else if (isDrawing) {
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = isErasing ? "#ffffff" : currentColor;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+    }
+
+    function stopAction() {
+      isDrawing = false;
+      isDragging = false;
+      selectedSample = null;
+      ctx.beginPath();
+    }
+
+    // Eraser Function
+    function setEraser() {
+      isErasing = true;
+    }
+
+    // Clear Canvas
+    function clearCanvas() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      sampleHistory = [];
+    }
+
+    // Undo Last Sample
+    function undoLastSample() {
+      if (sampleHistory.length > 0) {
+        sampleHistory.pop();
+        redrawCanvas();
+      }
+    }
+
+    // Redraw Canvas with Current History
+    function redrawCanvas() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      sampleHistory.forEach(sample => {
+        ctx.save();
+        ctx.translate(sample.x, sample.y);
+        sampleDrawings[sample.type]();
+        ctx.restore();
+      });
+    }
+
+    // Save Drawing
+    function saveDrawing() {
+      const link = document.createElement("a");
+      link.download = "drawing.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    // Sample Drawings (Centered at 0,0 and adjusted with translate)
+    const sampleDrawings = {
+      tree: function() {
+        ctx.fillStyle = "#8B4513";
+        ctx.fillRect(-15, 0, 30, 150);
+        ctx.fillStyle = "#228B22";
+        ctx.beginPath();
+        ctx.moveTo(0, -50);
+        ctx.quadraticCurveTo(-85, 0, -35, 50);
+        ctx.quadraticCurveTo(0, 20, 35, 50);
+        ctx.quadraticCurveTo(85, 0, 0, -50);
+        ctx.fill();
+      },
+      house: function() {
+        ctx.fillStyle = "#D2691E";
+        ctx.fillRect(-75, 0, 150, 150);
+        ctx.fillStyle = "#8B0000";
+        ctx.beginPath();
+        ctx.moveTo(-75, 0);
+        ctx.lineTo(0, -75);
+        ctx.lineTo(75, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#DEB887";
+        ctx.fillRect(-15, 70, 30, 80);
+      },
+      flower: function() {
+        ctx.fillStyle = "#006400";
+        ctx.fillRect(-5, 0, 10, 100);
+        ctx.fillStyle = "#FF69B4";
+        for (let i = 0; i < 8; i++) {
+          ctx.beginPath();
+          ctx.arc(25 * Math.cos(i * Math.PI / 4), 25 * Math.sin(i * Math.PI / 4), 15, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = "#FFD700";
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, Math.PI * 2);
+        ctx.fill();
+      },
+      sun: function() {
+        ctx.fillStyle = "#FFA500";
+        ctx.beginPath();
+        ctx.arc(0, 0, 50, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#FFA500";
+        ctx.lineWidth = 5;
+        for (let i = 0; i < 12; i++) {
+          ctx.beginPath();
+          ctx.moveTo(60 * Math.cos(i * Math.PI / 6), 60 * Math.sin(i * Math.PI / 6));
+          ctx.lineTo(80 * Math.cos(i * Math.PI / 6), 80 * Math.sin(i * Math.PI / 6));
+          ctx.stroke();
+        }
+      },
+      car: function() {
+        ctx.fillStyle = "#FF4500";
+        ctx.fillRect(-75, 0, 150, 50);
+        ctx.beginPath();
+        ctx.moveTo(-50, 0);
+        ctx.lineTo(-25, -25);
+        ctx.lineTo(25, -25);
+        ctx.lineTo(50, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#333333";
+        ctx.beginPath();
+        ctx.arc(-35, 50, 20, 0, Math.PI * 2);
+        ctx.arc(35, 50, 20, 0, Math.PI * 2);
+        ctx.fill();
+      },
+      star: function() {
+        ctx.fillStyle = "#FFD700";
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          ctx.lineTo(50 * Math.cos((18 + i * 72) * Math.PI / 180), 50 * Math.sin((18 + i * 72) * Math.PI / 180));
+          ctx.lineTo(25 * Math.cos((54 + i * 72) * Math.PI / 180), 25 * Math.sin((54 + i * 72) * Math.PI / 180));
+        }
+        ctx.closePath();
+        ctx.fill();
+      },
+      cat: function() {
+        ctx.fillStyle = "#808080";
+        ctx.fillRect(-40, 0, 80, 60);
+        ctx.beginPath();
+        ctx.arc(0, -20, 30, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-20, -50);
+        ctx.lineTo(-30, -70);
+        ctx.lineTo(-10, -60);
+        ctx.fill();
+        ctx.moveTo(20, -50);
+        ctx.lineTo(30, -70);
+        ctx.lineTo(10, -60);
+        ctx.fill();
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.arc(-10, -25, 5, 0, Math.PI * 2);
+        ctx.arc(10, -25, 5, 0, Math.PI * 2);
+        ctx.fill();
+      },
+      dog: function() {
+        ctx.fillStyle = "#A0522D";
+        ctx.fillRect(-40, 0, 80, 60);
+        ctx.beginPath();
+        ctx.arc(-20, -20, 25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-40, -40);
+        ctx.lineTo(-50, -60);
+        ctx.lineTo(-30, -50);
+        ctx.fill();
+        ctx.moveTo(0, -40);
+        ctx.lineTo(10, -60);
+        ctx.lineTo(-10, -50);
+        ctx.fill();
+        ctx.fillStyle = "#000000";
+        ctx.beginPath();
+        ctx.arc(-25, -25, 4, 0, Math.PI * 2);
+        ctx.arc(-15, -25, 4, 0, Math.PI * 2);
+        ctx.fill();
+      },
+      balloon: function() {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(0, -40, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#333333";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, 60);
+        ctx.stroke();
+      },
+
+    };
+
+    function loadSample(type) {
+      const newSample = { type, x: 400, y: 300 }; // Start at canvas center
+      sampleHistory.push(newSample);
+      redrawCanvas();
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
